@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌳 Gia Phả Họ Nguyễn</h1>
+            <p>Demo Gia Phả Họ Nguyễn, nhánh: Nguyễn Văn Trị</p>
+        </header>
+        <main id="family-tree-container">
+            <!-- Family tree will be dynamically generated here -->
+        </main>
+    </div>
+    <div class="zoom-controls">
+        <label for="zoom-slider">Zoom:</label>
+        <input type="range" id="zoom-slider" min="0.2" max="4" step="0.05" value="1">
+    </div>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

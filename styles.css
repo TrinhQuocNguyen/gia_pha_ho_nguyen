@@ -1,0 +1,440 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    color: #333;
+    overflow-x: auto; /* Allow horizontal scrolling for wide trees */
+}
+
+.container {
+    max-width: none;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+header h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+}
+
+.avatar-male {
+    /* background-color: #4a90e2 !important; */
+    background: linear-gradient(135deg, #88bdf1, #78bcf0);
+
+}
+.avatar-female {
+    /* background-color: #f78da7 !important;  */
+    background: linear-gradient(135deg, #f0a3c7, #be61b7);
+}
+
+#family-tree-container {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+    overflow: hidden; /* Changed for pan/zoom canvas */
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: left; /* Changed for vertical layout */
+    cursor: grab; /* Add cursor hint for panning */
+}
+
+/* Root generation should be centered */
+.tree-root {
+    margin-top: 20px; /* Add space for root tooltip */
+    margin-left: 20px; /* Add space for root tooltip */
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Changed for vertical layout */
+    position: relative;
+    width: 100%;
+}
+
+.tree-root .couple-container {
+    margin: 0; /* Changed for vertical layout */
+    display: inline-flex;
+}
+
+.generation {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    position: relative;
+    width: 100%;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 20px;
+}
+
+.generation::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    width: 2px;
+    height: 15px;
+    background: #bdc3c7;
+}
+
+.generation:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    width: 2px;
+    height: 15px;
+    background: #bdc3c7;
+}
+
+/* Person Cards */
+.person-card {
+    background: white;
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    margin: 0 3px;
+    min-width: 100px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.person-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.person-card.single {
+    background: linear-gradient(135deg, #f0f0f3, #a2a2a5);
+}
+
+/* Person Avatar - Updated for photos */
+.person-avatar, .person-avatar-fallback {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #48494b, #212222);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 5px auto; /* Position avatar above text */
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Person Photo */
+.person-photo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #bdc3c7; /* More visible border */
+    margin: 0 auto 5px auto; /* Position avatar above text */
+    display: block;
+}
+
+/* Hide fallback initially */
+.person-avatar-fallback {
+    display: none;
+}
+
+.person-card.single .person-avatar,
+.person-card.single .person-avatar-fallback {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.person-name {
+    font-weight: 600;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+    color: #2c3e50;
+    line-height: 1.2;
+}
+
+.person-birth {
+    font-size: 0.7rem;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* Couple Connections */
+.couple-container {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    padding: 15px 10px; /* Further reduced padding */
+    border: 2px dashed #3498db;
+    border-radius: 30px; /* Reduced radius */
+    background: rgba(52, 152, 219, 0.05);
+    margin: 2px; /* Reduced margin */
+    width: fit-content;
+    flex-shrink: 0;
+}
+
+.couple-connector {
+    width: 10px; /* Further reduced width */
+    height: 2px;
+    background: #3498db;
+    position: relative;
+    margin: 0 3px; /* Further adjusted margin */
+}
+
+.couple-connector::after {
+    content: '💕';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+}
+
+/* Add a subtle glow effect to the couple container */
+.couple-container:hover {
+    border-color: #2980b9;
+    background: rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Ensure couples stay in one line */
+.couple-container {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.couple-container .person-card {
+    flex-shrink: 0;
+}
+
+.node-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leaf-node {
+    /* Add padding to align with non-leaf nodes that have an expand button */
+    /* Button width (24px) + gap (8px) = 32px */
+    padding-right: 32px;
+}
+
+/* .family-member contains .node-content and then .children-container */
+.children-container {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: flex-start;
+    gap: 10px; /* Vertical gap */
+    position: relative;
+    margin-top: 5px;
+    padding-left: 300px; /* Indent children by the width of a single person node */
+}
+
+.children-container::before {
+    /* Disabled for vertical layout */
+    display: none;
+}
+
+/* Expand/Collapse Button */
+.expand-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    width: 24px; /* Fixed size */
+    height: 24px; /* Fixed size */
+    border-radius: 50%; /* Make it circular */
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the arrow */
+    margin: 0; /* Let parent flex gap handle spacing */
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.expand-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.expand-button .arrow {
+    transition: transform 0.3s ease;
+}
+
+.expand-button.expanded .arrow {
+    transform: rotate(90deg);
+}
+
+/* Collapsible Sections */
+.collapsible {
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.collapsible.expanded {
+    max-height: 2000px;
+    opacity: 1;
+    margin: 15px 0;
+    overflow: visible; /* Allow tooltips to show outside the container */
+}
+
+/* Remove generation indicators since we're using hierarchical structure */
+.generation-indicator {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin: 0 auto 15px auto;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.generation-indicator:hover {
+    background: #2980b9;
+}
+
+/* Tree Lines */
+.tree-line {
+    position: absolute;
+    background: #bdc3c7;
+}
+
+.tree-line.vertical {
+    width: 2px;
+    left: 50%;
+}
+
+.tree-line.horizontal {
+    height: 2px;
+    top: 50%;
+}
+
+/* Zoom Controls */
+.zoom-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(44, 62, 80, 0.85);
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-size: 0.9rem;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+#zoom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 150px;
+    height: 5px;
+    background: #566573;
+    outline: none;
+    border-radius: 5px;
+}
+
+#zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #3498db;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+#zoom-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #3498db;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    #family-tree-container {
+        min-width: 100%;
+        padding: 20px;
+    }
+    
+    .generation {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .person-card {
+        min-width: 150px;
+        margin: 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .couple-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .couple-connector {
+        width: 2px;
+        height: 20px;
+    }
+    
+    .couple-connector::after {
+        top: 50%;
+        left: -6px;
+        transform: translateY(-50%);
+    }
+    
+    .children-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

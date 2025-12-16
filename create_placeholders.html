@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Placeholder Images</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .placeholder { 
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            display: inline-block; 
+            margin: 10px; 
+            text-align: center; 
+            line-height: 30px; 
+            color: white; 
+            font-size: 12px; 
+            font-weight: bold;
+        }
+        .download-btn { 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 10px 5px;
+        }
+        .download-btn:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+    <h1>Family Tree Placeholder Images</h1>
+    <p>Click the buttons below to download placeholder images for your family tree:</p>
+    
+    <div id="placeholders"></div>
+    
+    <script>
+        const familyMembers = [
+            "prem-singh", "parvati", "sushila", "diwan-singh", "harvansh", "pushpa", 
+            "sunita", "darwan-singh", "kundan", "rita", "puran", "kamla", "munni", 
+            "vishnu-singh", "neera", "shankar-singh", "bhupendra", "ganga", "nidhi", 
+            "vikas", "neha", "chandresh", "nisha", "ankshay", "yogesh", "hridhima", 
+            "hridhaan", "krishiv", "lucas", "mia"
+        ];
+        
+        const colors = [
+            '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c',
+            '#e67e22', '#34495e', '#16a085', '#27ae60', '#8e44ad', '#f1c40f'
+        ];
+        
+        const container = document.getElementById('placeholders');
+        
+        familyMembers.forEach((member, index) => {
+            const div = document.createElement('div');
+            div.style.display = 'inline-block';
+            div.style.margin = '10px';
+            div.style.textAlign = 'center';
+            
+            const placeholder = document.createElement('div');
+            placeholder.className = 'placeholder';
+            placeholder.style.background = colors[index % colors.length];
+            placeholder.textContent = member.split('-').map(word => word[0].toUpperCase()).join('');
+            
+            const button = document.createElement('button');
+            button.className = 'download-btn';
+            button.textContent = `Download ${member}.jpg`;
+            button.onclick = () => downloadImage(placeholder, member);
+            
+            div.appendChild(placeholder);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(button);
+            container.appendChild(div);
+        });
+        
+        function downloadImage(element, filename) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 60;
+            canvas.height = 60;
+            
+            // Draw background
+            ctx.fillStyle = element.style.background;
+            ctx.beginPath();
+            ctx.arc(30, 30, 30, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(element.textContent, 30, 30);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `${filename}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.8);
+            link.click();
+        }
+    </script>
+</body>
+</html>
