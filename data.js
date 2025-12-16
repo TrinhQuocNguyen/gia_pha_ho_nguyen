@@ -217,13 +217,13 @@ const familyData = {
                         { 
                             name: "Nguyễn Quốc Hoàng Khôi",
                             gender: "male", 
-                            birthYear: "2020", 
+                            birthYear: "2021", 
                             image: "images/hridhima.jpg" 
                         },
                         { 
                             name: "Nguyễn Ngọc Tú Anh", 
                             gender: "female",
-                            birthYear: "2022", 
+                            birthYear: "2023", 
                             image: "images/hridhaan.jpg" 
                         }
                     ]
